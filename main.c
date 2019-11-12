@@ -51,46 +51,107 @@ int getIntegerInput(void) {
 
 //card processing functions ---------------
 
-//calculate the actual card number in the blackjack game
-int getCardNum(int cardnum) {
-	int i;	
-	 
-//real number of the card
-for(i=0;i<(N_CARDSET*N_CARD);i++)
-
-	do{
-	{
-	if (i%N_MAX_CARDNUM ==0)
-		detAce();							//function determining whether ace should be 1 or11	
-	else if (i%N_MAX_CARDNUM == 1)
-		CardTray[i]=2;
-	else if (i%N_MAX_CARDNUM == 2)
-		CardTray[i]=3;
-	else if (i%N_MAX_CARDNUM == 3)
-		CardTray[i]=4;
-	else if (i%N_MAX_CARDNUM == 4)
-		CardTray[i]=5;
-	else if (i%N_MAX_CARDNUM == 5)
-		CardTray[i]=6;
-	else if (i%N_MAX_CARDNUM == 6)
-		CardTray[i]=7;
-	else if (i%N_MAX_CARDNUM == 7)
-		CardTray[i]=8;
-	else if (i%N_MAX_CARDNUM == 8)
-		CardTray[i]=9;
-	else 
-		CardTray[i]=10 ;
-	}}while(i>=N_CARDSET*N_CARD);
+int initialCardInfo(void)
+{
+	int i;
+	
+	for (i=0;i<(N_CARDSET*N_CARD);i++)
+		CardTray[i]=i;
 	
 	return CardTray[i];
-
 }
 
+
+//calculate the actual card number in the blackjack game
+int getCardNum(int cardnum) {
+	
+	int i=cardnum;
+	int n=N_MAX_CARDNUM;
+
+	
+	if (i%n==0)
+		CardTray[i]=detAce();				//function determining whether ace should be 1 or11	
+	else if (i%n == 1)
+		CardTray[i]=2;
+	else if (i%n == 2)
+		CardTray[i]=3;
+	else if (i%n == 3)
+		CardTray[i]=4;
+	else if (i%n == 4)
+		CardTray[i]=5;
+	else if (i%n == 5)
+		CardTray[i]=6;
+	else if (i%n == 6)
+		CardTray[i]=7;
+	else if (i%n == 7)
+		CardTray[i]=8;
+	else if (i%n == 8)
+		CardTray[i]=9;
+	else 
+		CardTray[i]=10;
+}
+
+
+
 //print the card information (e.g. DiaA)
-void printCard(int cardnum) {
-		
-	printf("%i", CardTray[cardnum]);
-			
+void printCard(int cardnum){
+
+	getCardNum(cardnum);
+	
+	
+	if (cardnum/(N_MAX_CARDNUM*N_CARDSET)==0)
+	{
+		if (CardTray[cardnum]==0)
+			printf("Dia A\t");	
+		else if(CardTray[cardnum]==10)
+			printf("Dia J\t");
+		else if(CardTray[cardnum]==11)
+			printf("Dia Q\t");
+		else if(CardTray[cardnum]==12)
+			printf("Dia K\t");
+		else
+			printf("Dia %d\t", CardTray[cardnum]);
+	}
+	else if (cardnum/(N_MAX_CARDNUM*N_CARDSET)==1)
+		{
+		if (CardTray[cardnum]==0)
+			printf("Hrt A\t");
+		else if(CardTray[cardnum]==10)
+			printf("Hrt J\t");
+		else if(CardTray[cardnum]==11)
+			printf("Hrt Q\t");
+		else if(CardTray[cardnum]==12)
+			printf("Hrt K\t");
+		else
+			printf("Hrt %d\t", CardTray[cardnum]);
+	}
+	else if (cardnum/(N_MAX_CARDNUM*N_CARDSET)==2)
+			{
+		if (CardTray[cardnum]==0)
+			printf("Spd A\t");
+		else if(CardTray[cardnum]==10)
+			printf("Spd J\t");
+		else if(CardTray[cardnum]==11)
+			printf("Spd Q\t");
+		else if(CardTray[cardnum]==12)
+			printf("Spd K\t");
+		else
+			printf("Spd %d\t", CardTray[cardnum]);
+	}
+	else
+	{
+		if (CardTray[cardnum]==0)
+			printf("Clb A\t");
+		else if(CardTray[cardnum]==10)
+			printf("Clb J\t");
+		else if(CardTray[cardnum]==11)
+			printf("Clb Q\t");
+		else if(CardTray[cardnum]==12)
+			printf("Clb K\t");
+		else
+			printf("Clb %d\t", CardTray[cardnum]);
+	}
+
 }
 
 
@@ -104,7 +165,7 @@ int mixCardTray(void) {
 
 	for(i=0;i<=(N_CARDSET*N_CARD);i++)
 	{
-		n=rand()%(N_CARDSET*N_CARD);
+		n=rand()%(N_CARDSET*N_CARD);		//haven't solved overlapping prob.
 		temp=cardmix[i];
 		cardmix[i]=cardmix[n];
 		cardmix[n]=temp;				
@@ -113,7 +174,7 @@ int mixCardTray(void) {
 	return cardmix;
 }
 
-//get one card from the tray_get card index number gradually
+//get one card from the tray_get&increase card index number gradually
 int pullCard(void) {
 	
 	cardIndex++;
@@ -122,7 +183,7 @@ int pullCard(void) {
 		gameEnd=1;
 		return gameEnd;
 	else
-		return cardIndex-1;
+		return CardTray[cardIndex-1];
 }
 
 
