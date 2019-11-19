@@ -335,7 +335,7 @@ int calcStepResult(int user, int cardcnt) {
 	int i;
 	for(i=0;i<=cardcnt;i++)
 	{
-		cardSum[user]=getCardNum(cardhold[user][i]);		//add all cardholds when this function works
+		cardSum[user]+=getCardNum(cardhold[user][i]);		//add all cardholds when this function works
 	}
 	
 	//decide action by usertypes
@@ -344,13 +344,13 @@ int calcStepResult(int user, int cardcnt) {
 			if (cardSum[user]<17)
 			{
 				printf("GO!");
-				cardcnt++;
-				cardhold[user][cardcnt]=pullCard();
+				cardhold[user][cardcnt+1]=pullCard();
 			}
 			else
 			{
 				printf("STOP!(sum:%i)", cardSum[user]);
-				if (user==n_user)
+				
+				if (user==(n_user+1))
 					printf("[[[[[[dealer's result is........%i]]]]]]", cardSum[user]);						
 			}
 		}
@@ -460,20 +460,19 @@ int main(int argc, char *argv[]) {
 		for (i=0;i<=n_user;i++) //each player
 		{
 			int cardcnt=1;
-			int act=0;	
-			while ((cardSum[i]<21) && act==0) //do until the player dies or player says stop
+			int act=0;					    		//to save return value of getAction 
+			while ((cardSum[i]<21) && act==0)		//do until the player dies or player says stop
 			{
 				printUserCardStatus(i, cardcnt);	//print current card status 
 				calcStepResult(i, cardcnt);			//check the card status 
 				
 				if (i==0)
 				{	
-					act=getAction();					//GO? STOP? 
-				 	 if (act==0)
-					{
-					  cardcnt++;
-					}
+					act=getAction();				//GO? STOP? 
+				 	
 				}
+				
+				cardcnt++;
 			}	//(user!=0)->end
 		}
 	
