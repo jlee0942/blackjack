@@ -296,10 +296,13 @@ void printCardInitialStatus(void) {
 
 
 int getAction(void){
-
+	
+	int i;
+	
 	printf("Action? (0 - go, others - stay) :");
-	getIntegerInput();
-
+	i=getIntegerInput();
+	
+	return i;
 }
 
 void printUserCardStatus(int user, int cardcnt) {
@@ -317,6 +320,7 @@ void printUserCardStatus(int user, int cardcnt) {
 		printf("\n>>> dealer turn! -------------------\n");
 	}
 	printf("   -> card : ");
+
 	for (i=0;i<=cardcnt;i++)
 	{
 		printCard(cardhold[user][i]);
@@ -331,7 +335,7 @@ int calcStepResult(int user, int cardcnt) {
 	int i;
 	for(i=0;i<=cardcnt;i++)
 	{
-		cardSum[user]=cardhold[user][i];		//add all cardholds when this function works
+		cardSum[user]=getCardNum(cardhold[user][i]);		//add all cardholds when this function works
 	}
 	
 	//decide action by usertypes
@@ -353,15 +357,15 @@ int calcStepResult(int user, int cardcnt) {
 	else	//when cardSum[user]=cardSum[0]
 		{
 			if (cardSum[0]==21)
-			{	if(cardcnt==1)		//when you did nothing after initial card offering
+			{	
+				if(cardcnt==1)		//when you did nothing after initial card offering
 				{
 					printf("BLACKJACK!");
 				}
 				else
-					{
-					printf("STOP!");	//end turn, when your cardSum gets 21
-					return cardSum[0];
-					}
+				{
+					printf("STOP!");	//end turn when your cardSum gets 21
+				}
 			}
 			else if (cardSum[0]>21)
 			{
@@ -456,15 +460,19 @@ int main(int argc, char *argv[]) {
 		for (i=0;i<=n_user;i++) //each player
 		{
 			int cardcnt=1;
-			while (cardSum[i]<21|| getIntegerInput()==0) //do until the player dies or player says stop
+			int act=0;	
+			while ((cardSum[i]<21) && act==0) //do until the player dies or player says stop
 			{
 				printUserCardStatus(i, cardcnt);	//print current card status 
 				calcStepResult(i, cardcnt);			//check the card status 
 				
 				if (i==0)
 				{	
-					getAction();					//GO? STOP? 
-				 	cardcnt++;
+					act=getAction();					//GO? STOP? 
+				 	 if (act==0)
+					{
+					  cardcnt++;
+					}
 				}
 			}	//(user!=0)->end
 		}
