@@ -68,88 +68,88 @@ int getCardNum(int cardnum) {
 	int i=cardnum;
 	int n=N_MAX_CARDNUM;
 
-	
-	if (i%n==0)
-		CardTray[i]=1;				//function determining whether ace should be 1 or11	
-	else if (i%n == 1)
-		CardTray[i]=2;
-	else if (i%n == 2)
-		CardTray[i]=3;
-	else if (i%n == 3)
-		CardTray[i]=4;
-	else if (i%n == 4)
-		CardTray[i]=5;
-	else if (i%n == 5)
-		CardTray[i]=6;
-	else if (i%n == 6)
-		CardTray[i]=7;
-	else if (i%n == 7)
-		CardTray[i]=8;
-	else if (i%n == 8)
-		CardTray[i]=9;
-	else 
-		CardTray[i]=10;
-}
 
+	if (i%n==0)
+		return 1;				//function determining whether ace should be 1 or11	
+	else if (i%n == 1)
+		return 2;
+	else if (i%n == 2)
+		return 3;
+	else if (i%n == 3)
+		return 4;
+	else if (i%n == 4)
+		return 5;
+	else if (i%n == 5)
+		return 6;
+	else if (i%n == 6)
+		return 7;
+	else if (i%n == 7)
+		return 8;
+	else if (i%n == 8)
+		return 9;
+	else 
+		return 10;
+
+}
 
 
 //print the card information (e.g. DiaA)
 int printCard(int cardnum){
 
-	getCardNum(cardnum);
+	int i=(N_MAX_CARDNUM*N_CARDSET);
+	int n=getCardNum(cardnum);
 	
-	
-	if (cardnum/(N_MAX_CARDNUM*N_CARDSET)==0)
+	if (cardnum/i==0)
 	{
-		if (CardTray[cardnum]==0)
+		if (cardnum%i==0)
 			printf("Dia A\t");	
-		else if(CardTray[cardnum]==10)
+		else if(cardnum%i==10)
 			printf("Dia J\t");
-		else if(CardTray[cardnum]==11)
+		else if(cardnum%i==11)
 			printf("Dia Q\t");
-		else if(CardTray[cardnum]==12)
+		else if(cardnum%i==12)
 			printf("Dia K\t");
 		else
-			printf("Dia %d\t", CardTray[cardnum]);
+			printf("Dia %d\t", n);
 	}
-	else if (cardnum/(N_MAX_CARDNUM*N_CARDSET)==1)
+	else if (cardnum/i==1)
 		{
-		if (CardTray[cardnum]==0)
+		if (cardnum%i==0)
 			printf("Hrt A\t");
-		else if(CardTray[cardnum]==10)
+		else if(cardnum%i==10)
 			printf("Hrt J\t");
-		else if(CardTray[cardnum]==11)
+		else if(cardnum%i==11)
 			printf("Hrt Q\t");
-		else if(CardTray[cardnum]==12)
+		else if(cardnum%i==12)
 			printf("Hrt K\t");
 		else
-			printf("Hrt %d\t", CardTray[cardnum]);
+			printf("Hrt %d\t", n);
 	}
-	else if (cardnum/(N_MAX_CARDNUM*N_CARDSET)==2)
+	else if (cardnum/i==2)
 			{
-		if (CardTray[cardnum]==0)
+		if (cardnum%i==0)
 			printf("Spd A\t");
-		else if(CardTray[cardnum]==10)
+		else if(cardnum%i==10)
 			printf("Spd J\t");
-		else if(CardTray[cardnum]==11)
+		else if(cardnum%i==11)
 			printf("Spd Q\t");
-		else if(CardTray[cardnum]==12)
+		else if(cardnum%i==12)
 			printf("Spd K\t");
 		else
-			printf("Spd %d\t", CardTray[cardnum]);
+			printf("Spd %d\t", n);
 	}
 	else
 	{
-		if (CardTray[cardnum]==0)
+		if (cardnum%i==0)
 			printf("Clb A\t");
-		else if(CardTray[cardnum]==10)
+		else if(cardnum%i==10)
 			printf("Clb J\t");
-		else if(CardTray[cardnum]==11)
+		else if(cardnum%i==11)
 			printf("Clb Q\t");
-		else if(CardTray[cardnum]==12)
+		else if(cardnum%i==12)
 			printf("Clb K\t");
 		else
-			printf("Clb %d\t", CardTray[cardnum]);
+			printf("Clb %d\t", n);
 	}
 	return;
 
@@ -175,7 +175,7 @@ int mixCardTray(void) {
 		cardmix[n]=temp;				
 		
 	}
-	return cardmix[i];
+	return cardmix;
 }
 
 //get one card from the tray_get&increase card index number gradually
@@ -185,13 +185,14 @@ int pullCard(void) {
 	
 	if (cardIndex>N_CARDSET*N_CARD)
 	{
-		gameEnd=1;
+		gameEnd=1;					//no card left
 		return gameEnd;
 	}
 	else
 	{
 		return CardTray[cardIndex-1];
 	}
+	
 }
 
 
@@ -305,26 +306,35 @@ void printUserCardStatus(int user, int cardcnt) {
 	int i;
 	if (user==0)
 	{
-		printf("\n>>>my turn------------------------!");
+		printf("\n>>>my turn!-------------------\n");
 	}
 	else if (user<n_user)
 	{
-		printf("\n>>>player%i 's turn------------------------!", user);
+		printf("\n>>>player%i's turn!-------------------\n", user);
 	}
 	else
 	{
-		printf("\n>>> dealer turn! ------------------------\n");
+		printf("\n>>> dealer turn! -------------------\n");
 	}
 	printf("   -> card : ");
-	for (i=0;i<cardcnt;i++)
+	for (i=0;i<=cardcnt;i++)
+	{
 		printCard(cardhold[user][i]);
-	printf("\t ::: ");
+	}
+		printf("\t ::: ");
 }
 
 
 int calcStepResult(int user, int cardcnt) {
-	cardSum[user]+=cardhold[user][cardcnt];
 	
+	//calculate current cardSum
+	int i;
+	for(i=0;i<=cardcnt;i++)
+	{
+		cardSum[user]=cardhold[user][i];		//add all cardholds when this function works
+	}
+	
+	//decide action by usertypes
 	if (user!=0)
 		{
 			if (cardSum[user]<17)
@@ -340,22 +350,28 @@ int calcStepResult(int user, int cardcnt) {
 					printf("[[[[[[dealer's result is........%i]]]]]]", cardSum[user]);						
 			}
 		}
-	else	
+	else	//when cardSum[user]=cardSum[0]
 		{
-			if (cardSum[user]==21)
-			{	if(cardcnt==1)
+			if (cardSum[0]==21)
+			{	if(cardcnt==1)		//when you did nothing after initial card offering
 				{
 					printf("BLACKJACK!");
 				}
 				else
-					printf("STOP!");	//end turn
+					{
+					printf("STOP!");	//end turn, when your cardSum gets 21
+					return cardSum[0];
+					}
 			}
-			else
-			{	
-			 	getAction();
-			}	
+			else if (cardSum[0]>21)
+			{
+				printf("DEAD!(sum: %i)", cardSum[0]);	//you die;
+			}
+			
+		}	//if cardSum[0]<21 end calcStepResult and go to getAction
+				
 		
-
+		return cardSum[user];
 }
 
 
@@ -440,24 +456,24 @@ int main(int argc, char *argv[]) {
 		for (i=0;i<=n_user;i++) //each player
 		{
 			int cardcnt=1;
-			while (cardSum[i]<21|| getIntegerInput()!=0) //do until the player dies or player says stop
+			while (cardSum[i]<21|| getIntegerInput()==0) //do until the player dies or player says stop
 			{
-				printUserCardStatus(i, cardcnt);//print current card status 
-				calcStepResult(i, cardcnt);//check the card status ::: calcStepResult()
+				printUserCardStatus(i, cardcnt);	//print current card status 
+				calcStepResult(i, cardcnt);			//check the card status 
+				
 				if (i==0)
 				{	
-					getAction();//GO? STOP? ::: getAction()
+					getAction();					//GO? STOP? 
 				 	cardcnt++;
 				}
-				else
-					cardcnt++;
-			}
+			}	//(user!=0)->end
 		}
-		
+	
 }while(gameEnd == 0);
+		
+		return 0;
 
-}}
-
+}
 	/*	
 		//result
 		checkResult();
