@@ -333,7 +333,9 @@ int calcStepResult(int user, int cardcnt) {
 	
 	//calculate current cardSum
 	int i;
-	for(i=0;i<=cardcnt;i++)
+	
+	cardSum[user]=getCardNum(cardhold[user][0])+getCardNum(cardhold[user][1]);
+	for(i=2;i<=cardcnt;i++)
 	{
 		cardSum[user]+=getCardNum(cardhold[user][i]);		//add all cardholds when this function works
 	}
