@@ -21,6 +21,7 @@ int cardhold[N_MAX_USER+1][N_MAX_CARDHOLD];	//cards that currently the players h
 int cardSum[N_MAX_USER];					//sum of the cards
 int bet[N_MAX_USER];						//current betting 
 int gameEnd = 0; 							//game end flag
+int end=0;									//end each player's turn
 
 //some utility functions
 
@@ -293,6 +294,11 @@ int getAction(void){
 	printf("Action? (0 - go, others - stay) :");
 	i=getIntegerInput();
 	
+	if (i!= 0)
+	{
+		end++;
+	}	
+	
 	return i;
 }
 
@@ -346,7 +352,11 @@ int calcStepResult(int user, int cardcnt) {
 				printf("STOP!(sum:%i)", cardSum[user]);
 				
 				if (user==(n_user+1))
+				{
 					printf("[[[[[[dealer's result is........%i]]]]]]", cardSum[user]);						
+				}
+				
+				end++;		//end player's turn
 			}
 		}
 	else	//when cardSum[user]=cardSum[0]
@@ -360,6 +370,7 @@ int calcStepResult(int user, int cardcnt) {
 				else
 				{
 					printf("STOP!");	//end turn when your cardSum gets 21
+					end++;
 				}
 			}
 			else if (cardSum[0]>21)
@@ -458,12 +469,12 @@ int main(int argc, char *argv[]) {
 		{
 			int cardcnt=1;
 			int act=0;					    		//to save return value of getAction 
-			while ((cardSum[i]<21) && act==0)		//do until the player dies or player says stop
+			while (cardSum[i]<21 && (end==0))		//do until the player dies or player says stop
 			{
 				printUserCardStatus(i, cardcnt);	//print current card status 
 				calcStepResult(i, cardcnt);			//check the card status 
 				
-				if (i==0)
+				if ((i==0)&&cardSum[i]<21&&(end==0))			//my turn & cardSum over 21-> my turn end
 				{	
 					act=getAction();				//GO? STOP? 
 					cardhold[i][cardcnt+1]=pullCard(); 	
@@ -471,6 +482,7 @@ int main(int argc, char *argv[]) {
 				
 				cardcnt++;
 			}
+			end=0;
 		}
 	
 }while(gameEnd == 0);
