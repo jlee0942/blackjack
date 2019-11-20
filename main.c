@@ -1,18 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-#define N_CARDSET			1
-#define N_CARD				52
-#define N_DOLLAR			50
+#include "header.h"
 
 
-#define N_MAX_CARDNUM		13
-#define N_MAX_USER			5
-#define N_MAX_CARDHOLD		10
-#define N_MAX_GO			17
-#define N_MAX_BET			5
-
-#define N_MIN_ENDCARD		30
 
 
 
@@ -175,7 +165,7 @@ int mixCardTray(void) {
 		cardmix[n]=temp;				
 		
 	}
-	return cardmix;
+	return 0;
 }
 
 //get one card from the tray_get&increase card index number gradually
@@ -190,6 +180,7 @@ int pullCard(void) {
 	}
 	else
 	{
+		printf("(%i)", CardTray[cardIndex-1]);
 		return CardTray[cardIndex-1];
 	}
 	
@@ -279,7 +270,7 @@ void printCardInitialStatus(void) {
 	
 	
 	printf("\n---------------CARD OFFERING---------------\n");
-	printf("---Dealer	: 	X\t");	
+	printf("-->Dealer	: 	X\t");	
 	printCard(cardhold[n_user][1]);
 	printf("\n-->You		:	");	
 	printCard(cardhold[0][0]);
@@ -306,7 +297,9 @@ int getAction(void){
 }
 
 void printUserCardStatus(int user, int cardcnt) {
+	
 	int i;
+	
 	if (user==0)
 	{
 		printf("\n>>>my turn!-------------------\n");
@@ -334,7 +327,7 @@ int calcStepResult(int user, int cardcnt) {
 	//calculate current cardSum
 	int i;
 	
-	cardSum[user]=getCardNum(cardhold[user][0])+getCardNum(cardhold[user][1]);
+	cardSum[user]=getCardNum(cardhold[user][0])+getCardNum(cardhold[user][1]);		//initialize cardSum
 	for(i=2;i<=cardcnt;i++)
 	{
 		cardSum[user]+=getCardNum(cardhold[user][i]);		//add all cardholds when this function works
@@ -346,7 +339,7 @@ int calcStepResult(int user, int cardcnt) {
 			if (cardSum[user]<17)
 			{
 				printf("GO!");
-				cardhold[user][cardcnt+1]=pullCard();
+				cardhold[user][cardcnt+1]=pullCard();	//get card from tray
 			}
 			else
 			{
@@ -376,10 +369,11 @@ int calcStepResult(int user, int cardcnt) {
 			
 		}	//if cardSum[0]<21 end calcStepResult and go to getAction
 				
-		
 		return cardSum[user];
 }
 
+
+/*
 
 
 int checkResult(void){
@@ -406,7 +400,7 @@ int checkResult(void){
 	gameEnd++;
 }
 
-/*
+
 int checkResult(int roundIndex) {
 	
 	roundIndex++;
@@ -443,7 +437,8 @@ int main(int argc, char *argv[]) {
 	//2. card tray
 	mixCardTray();
 
-
+	for (i=0;i<52;i++)
+		printf("card %i : %i\n", i, CardTray[i]);
 
 	//Game start --------
 	do {
@@ -471,11 +466,11 @@ int main(int argc, char *argv[]) {
 				if (i==0)
 				{	
 					act=getAction();				//GO? STOP? 
-				 	
-				}
+					cardhold[i][cardcnt+1]=pullCard(); 	
+				}	//(user!=0)->end
 				
 				cardcnt++;
-			}	//(user!=0)->end
+			}
 		}
 	
 }while(gameEnd == 0);
@@ -484,6 +479,7 @@ int main(int argc, char *argv[]) {
 
 }
 	/*	
+
 		//result
 		checkResult();
 	} while (gameEnd == 0);
