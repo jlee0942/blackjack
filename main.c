@@ -543,7 +543,12 @@ int checkResult(void){			//how to deal with overflow??_unsolved
 					{
 						printf("lose (%i)\n", dollar[i]);
 					}
+				/*	else 
+					{
+						printf("wrong");
+					}*/
 				}
+				
 			}
 			else
 			{
@@ -560,36 +565,23 @@ int checkResult(void){			//how to deal with overflow??_unsolved
 			cardhold[i][j]=0;
 		}
 	}
+	
+	
+	for(i=0;i<n_user;i++)
+	{
+		if(dollar[i]<=0)
+			{
+				gameEnd++;
+				
+			}
+	}
 				
 	return;
 }
 
 
-/*		
-	if(cardSum[n_user]==21)
-	{
-		printf("you lose");
-	}
-	else if (cardSum[n_user]>21)
-	{
-		printf("you win");
-	}
-	else
-	{
-		if (cardSum[0]<cardSum[n_user])
-		{	
-			printf("you lose");
-		}
-		else
-		{
-			printf("you win");	
-		}
-	}
-	gameEnd++;
-}
 
 
-*/
 /*
 int i,n;
 	int temp;
@@ -605,26 +597,35 @@ int i,n;
 	}
 	return 0;
 
-
+*/
 int checkWinner(void) {
 	
-	int maxleft=0;
-	int usernum[n_user];
-	int i;
+	int maxleft=dollar[0];
+	int winIndex; 
+	int i,n;
 	
 	for(i=0;i<n_user;i++)
 	{
-		if(dollar[i]>maxleft)
+		if(maxleft<dollar[i])
 		{
 			maxleft=dollar[i];
-			usernum[i]=maxleft;
+			winIndex=i;
 		}
 	}
 	
-	printf("Finial Winner: %i", usernum[i]);		
+	printf("\n-------------------------\n");
+	if(winIndex==0)
+	{		
+	printf("\n--Finial Winner: You (total $%i)", maxleft);			
+	}
+	else
+	{
+		printf("\n--Finial Winner: player %i (total $%i)", winIndex, maxleft);						
+	}
+	printf("\n-------------------------\n");		
 }
 
-*/
+
 
 int main(int argc, char *argv[]) {
 	
@@ -691,7 +692,7 @@ int main(int argc, char *argv[]) {
 }while(gameEnd == 0);
 	
 	
-//	checkWinner();
+	checkWinner();
 	
 			
 		return 0;
