@@ -21,7 +21,8 @@ int cardhold[N_MAX_USER+1][N_MAX_CARDHOLD];	//cards that currently the players h
 int cardSum[N_MAX_USER];					//sum of the cards
 int bet[N_MAX_USER];						//current betting 
 int gameEnd = 0; 							//game end flag
-int endturn=0;									//end each player's turn
+int endturn=0;								//end each player's turn
+int roundIndex = 0;							//roundnumber
 
 //some utility functions
 
@@ -174,7 +175,7 @@ int pullCard(void) {
 	
 	cardIndex++;
 	
-	if (cardIndex>N_CARDSET*N_CARD)
+	if (cardIndex>=N_CARDSET*N_CARD)
 	{
 		gameEnd=1;					//no card left
 		return gameEnd;
@@ -445,7 +446,8 @@ int checkResult(void){			//how to deal with overflow??_unsolved
 	
 	int i;
 	
-	printf("\n[[[[[[dealer's result is........%i]]]]]]\n", cardSum[n_user]);	
+	printf("\n[[[[[[dealer's result is........%i]]]]]]\n", cardSum[n_user]);
+	printf("\n----result of ROUND %i---------------------------\n", roundIndex);	
 	for(i=0;i<n_user;i++)
 	{
 			
@@ -456,11 +458,12 @@ int checkResult(void){			//how to deal with overflow??_unsolved
 		 		{
 	 				dollar[i]+=bet[i];
 		 		}
-				else if (cardSum[i]==21)
+				else if (cardSum[i]==21 && ifBJack[i]==0)
 				{
-				
+	 				dollar[i]+=bet[i];
 				}
 		}
+		
 	
 		else if (cardSum[n_user]<21)		//dealer not overflow & not 21
 		{		
@@ -469,6 +472,7 @@ int checkResult(void){			//how to deal with overflow??_unsolved
 	 			dollar[i]-=bet[i];
 	 		}
 			else if (cardSum[i]>=cardSum[n_user])	//player win
+			{
 				if(cardSum[i]!=21)
 				{
 	 				dollar[i]+=bet[i];			
@@ -480,6 +484,7 @@ int checkResult(void){			//how to deal with overflow??_unsolved
 						dollar[i]+=bet[i];
 					}		
 				}		
+			}
 		}
 		else if (cardSum[n_user]==21)			//dealer 21 
 		{
@@ -587,7 +592,7 @@ int checkWinner(int roundIndex) {
 */
 
 int main(int argc, char *argv[]) {
-	int roundIndex = 0;
+	
 	int max_user;
 	int i;
 	
