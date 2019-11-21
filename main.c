@@ -532,11 +532,11 @@ int checkResult(void){			//how to deal with overflow??_unsolved
 
 
 
-int checkWinner(void) {
+int checkWinner(void) {			//most money left
 	
-	int maxleft=dollar[0];
-	int winIndex; 
-	int i,n;
+	int maxleft=dollar[0];		//assume dollar[0] maxnum
+	int winIndex=0; 
+	int i;
 	
 	for(i=0;i<n_user;i++)
 	{
@@ -545,6 +545,7 @@ int checkWinner(void) {
 			maxleft=dollar[i];
 			winIndex=i;
 		}
+		
 	}
 	
 	printf("\n--------------------------\n");
@@ -554,7 +555,7 @@ int checkWinner(void) {
 	}
 	else
 	{
-		printf("\n--Finial Winner: player %i (total $%i)", winIndex, maxleft);						
+		printf("\n--Finial Winner: player %i (total $%i)", winIndex, maxleft);								
 	}
 	printf("\n--------------------------\n");		
 }
