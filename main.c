@@ -61,7 +61,7 @@ int getCardNum(int cardnum) {
 
 
 	if (i%n==0)
-		return 1;				//function determining whether ace should be 1 or11	
+		return 1;				
 	else if (i%n == 1)
 		return 2;
 	else if (i%n == 2)
@@ -289,17 +289,14 @@ void printCardInitialStatus(void) {
 
 int getAction(void){
 	
-	int i;
-	
 	printf("Action? (0 - go, others - stay) :");
-	i=getIntegerInput();
 	
-	if (i!= 0)
+	if (getIntegerInput()!= 0)
 	{
 		endturn++;
 	}	
 	
-	return i;
+	return ;
 }
 
 void printUserCardStatus(int user, int cardcnt) {
@@ -332,35 +329,80 @@ void printUserCardStatus(int user, int cardcnt) {
 }
 
 
-int calcStepResult(int user, int cardcnt) {
+int calcStepResult(int user, int cardcnt) {					//overflow or player blackjack ->calculate dollar left
 	
 	//calculate current cardSum
 	int i;
 	
+	cardSum[user]=0;		//initialize cardSum
 	for(i=0;i<=cardcnt;i++)
 	{
 		cardSum[user]+=getCardNum(cardhold[user][i]);		//add all cardholds when this function works
+		if (getCardNum(cardhold[user][i])==1)				//determine number of Ace
+		{
+			if ( (21-cardSum[user]) >= 10 )	
+			{			
+				cardSum[user]=cardSum[user]+10;
+			
+				if( cardSum[user]>21 )
+				{
+					cardSum[user]=cardSum[user]-10;
+				}
+			}
+		}
 	}
 	
+	
 	//decide action by usertypes
-	if (user!=0)
+	if (user!=0)	//not your turn
 		{
 			if (cardSum[user]<17)
 			{
 				printf("GO!");
 				cardhold[user][cardcnt+1]=pullCard();	//get card from tray
 			}
-			else if(cardSum[user]>21)
+			else if(cardSum[user]>21)					//if cardsum -> overflow
 			{
 				printf("DEAD!(sum:%i)", cardSum[user]);	
-				dollar[user]-=bet[user];
-				printf("	-$%i (%i)", bet[user], dollar[user]);
+				dollar[user]-=bet[user];				//lose 
+				if(user<n_user)
+				{
+					printf("	-$%i (%i)", bet[user], dollar[user]);
+				}
+				return ;
 			}
-			else
+			else					//over 17 under(equal) 21
 			{
 				printf("STAY!(sum:%i)", cardSum[user]);
 				
-				if (user==n_user)
+				if(cardSum[user]==21)
+				{
+					if (cardcnt==1)
+					{
+						printf("BLACKJACK!");
+						if(user<n_user)						//player blackjack
+						{				
+							dollar[user]+=2*bet[user];		//blackjack -> win &earn twice
+						}
+					
+					}
+					else
+					{
+						if(user<n_user)
+						{
+							dollar[user]+=bet[user];		//not blackjack but earn betting
+						}
+					}
+					
+					for(i=0; i<n_user;i++)
+						if(cardSum[i]==21 && cardcnt!=1)		//non-blackjack players lose
+						{
+							dollar[user]-=bet[user];	
+						}
+					
+				}
+				
+				if (user==n_user)						//if dealer's turn
 				{
 					printf("\n[[[[[[dealer's result is........%i]]]]]]\n", cardSum[user]);						
 				}
@@ -368,28 +410,31 @@ int calcStepResult(int user, int cardcnt) {
 				endturn++;		//end player's turn
 			}
 		}
-	else	//when cardSum[user]=cardSum[0]
+	else		// your turn
 		{
 			if (cardSum[0]==21)
 			{	
 				if(cardcnt==1)		//when you did nothing after initial card offering
 				{
 					printf("BLACKJACK!");
+					dollar[user]+=(2*bet[user]);	//blackjack ->win, you earn more money
 				}
 				else
 				{
-					printf("STAY!");	//end turn when your cardSum gets 21
+					printf("STAY!");	//end turn when your cardSum gets 21 & not blackjack
 					endturn++;
 				}
 			}
 			else if (cardSum[0]>21)
 			{
 				printf("DEAD!(sum: %i)", cardSum[0]);	//you die;
+				dollar[user]-=bet[user];				//you lose money
+				printf("	-$%i (%i)", bet[user], dollar[user]);	
 			}
 			
 		}	//if cardSum[0]<21 end calcStepResult and go to getAction
 				
-		return cardSum[user];
+		return ;
 }
 
 
@@ -512,7 +557,6 @@ int main(int argc, char *argv[]) {
 		for (i=0;i<=n_user;i++) //each player
 		{
 			int cardcnt=1;
-			int act=0;					    		//to save return value of getAction
 			cardSum[i]=0; 
 			while (cardSum[i]<21 && (endturn==0))		//do until the player dies or player says stop
 			{
@@ -521,7 +565,7 @@ int main(int argc, char *argv[]) {
 				
 				if ((i==0) && cardSum[i]<21 && (endturn==0))			//my turn & cardSum over 21-> my turn end
 				{	
-					act=getAction();				//GO? STOP? 
+					getAction();				//GO? STOP? 
 					cardhold[i][cardcnt+1]=pullCard(); 	
 				}	//(user!=0)->end
 				
