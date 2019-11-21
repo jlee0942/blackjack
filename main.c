@@ -192,60 +192,12 @@ int pullCard(void) {
 //playing game functions -----------------------------
 
 //player settiing
-int configUser(void) {
-
-	do{
-	
-		printf("input the number of players(max:%d):", N_MAX_USER);
-		n_user=getIntegerInput();
- 
-		if(n_user<=0)		//when input isn't integer or less than 1
-		{	
-			printf("invalid!\n");		
-		}
-		else if(n_user>5)	//when input exceeds max num
-		{
-			printf("too many!\n");
-		}
-	}while((n_user>5)||(n_user<=0));
-	printf(" --> card is mixed and put into the tray");
-	
-	return n_user;
-		
-}
+extern int configUser(void);
 
 
 //betting
-int betDollar(void) {
+extern int betDollar(void); 
 
-	int i;	//i for func'for' 
-	int n;	//n for random betting
-	
-
-	printf("----------BETTING STEP----------\n" );
-	
-	do{
-		printf("your betting(total :$%i):", dollar[0] );
-		bet[0]=getIntegerInput(); 
-			if(bet[0]<=0)		//when input isn't integer or less than 1
-			{	
-				printf("invalid!\n");		
-			}
-			else if(bet[0]>dollar[0])	//when input exceeds max num
-			{
-				printf("too many!\n");
-			}
-	}while((bet[0]<=0)||(bet[0]>dollar[0]));
-	
-
-	for (i=1;i<n_user;i++)
-	{
-		n=rand()%(N_MAX_BET)+1;
-		bet[i]=n;
-		printf("player%i bets $%i(out of $%i)\n", i, bet[i] , dollar[i]);
-	}
-	
-}
 
 
 //offering initial 2 cards
@@ -290,11 +242,10 @@ void printCardInitialStatus(void) {
 
 int getAction(void){
 	
-	printf("Action? (0 - go, others - stay) :");
+	printf("Action? (sum:%i) (0 - go, others - stay) :", cardSum[0]);
 	
 	if (getIntegerInput()!= 0)
 	{
-		printf("(sum:%i)", cardSum[0]);
 		endturn++;
 	}	
 	else
@@ -490,7 +441,7 @@ int checkResult(void){			//how to deal with overflow??_unsolved
 	
 	for(i=0;i<n_user;i++)
 	{
-		if (i==0)
+		if (i==0)			//you
 		{	
 			printf("\n  -> your result: ");
 			if (cardSum[i]>21)
@@ -507,7 +458,7 @@ int checkResult(void){			//how to deal with overflow??_unsolved
 				{
 				printf("lose (%i)\n", dollar[i]);
 				}
-				else if(ifBJack[n_user]==0)
+				else if(ifBJack[n_user]==1)
 				{
 					if ((cardSum[i]==21)&&(ifBJack[i]==0))
 					{
@@ -520,7 +471,7 @@ int checkResult(void){			//how to deal with overflow??_unsolved
 				printf("win (%i)\n", dollar[i]);
 			}
 		}
-		else
+		else			//not you
 		{
 			printf("\n  ->%ith result	:",i);
 			if (cardSum[i]>21)
@@ -543,10 +494,10 @@ int checkResult(void){			//how to deal with overflow??_unsolved
 					{
 						printf("lose (%i)\n", dollar[i]);
 					}
-				/*	else 
+						else 
 					{
 						printf("wrong");
-					}*/
+					}
 				}
 				
 			}
@@ -581,23 +532,6 @@ int checkResult(void){			//how to deal with overflow??_unsolved
 
 
 
-
-/*
-int i,n;
-	int temp;
-	int *cardmix = CardTray;				//in order to randomly mix cards
-
-	for(i=0;i<(N_CARDSET*N_CARD);i++)
-	{
-		n=rand()%(N_CARDSET*N_CARD);		//haven't solved overlapping prob.
-		temp=cardmix[i];
-		cardmix[i]=cardmix[n];
-		cardmix[n]=temp;				
-		
-	}
-	return 0;
-
-*/
 int checkWinner(void) {
 	
 	int maxleft=dollar[0];
@@ -613,16 +547,16 @@ int checkWinner(void) {
 		}
 	}
 	
-	printf("\n-------------------------\n");
+	printf("\n--------------------------\n");
 	if(winIndex==0)
 	{		
-	printf("\n--Finial Winner: You (total $%i)", maxleft);			
+	printf("\n---Finial Winner: You (total $%i)", maxleft);			
 	}
 	else
 	{
 		printf("\n--Finial Winner: player %i (total $%i)", winIndex, maxleft);						
 	}
-	printf("\n-------------------------\n");		
+	printf("\n--------------------------\n");		
 }
 
 
@@ -689,7 +623,7 @@ int main(int argc, char *argv[]) {
 		checkResult();
 		
 	
-}while(gameEnd == 0);
+		}while(gameEnd == 0);
 	
 	
 	checkWinner();
