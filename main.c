@@ -177,12 +177,12 @@ int pullCard(void) {
 	
 	if (cardIndex>=N_CARDSET*N_CARD)
 	{
-		gameEnd=1;					//no card left
+		gameEnd++;					//no card left
 		return gameEnd;
 	}
 	else
 	{
-		printf("(%i)", CardTray[cardIndex-1]);
+		
 		return CardTray[cardIndex-1];
 	}
 	
