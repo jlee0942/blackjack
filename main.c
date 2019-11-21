@@ -563,7 +563,6 @@ int checkWinner(void) {
 
 int main(int argc, char *argv[]) {
 	
-	int max_user;
 	int i;
 	
 	srand((unsigned)time(NULL));
