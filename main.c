@@ -441,47 +441,61 @@ int calcStepResult(int user, int cardcnt) {					//overflow or player blackjack -
 
 
 
-int checkResult(void){
+int checkResult(void){			//how to deal with overflow??_unsolved 
 	
 	int i;
 	
+	if (cardSum[n_user]>21)		//dealer overflow
 		
-	if (cardSum[n_user]<21)
 		for(i=0;i<n_user;i++)
-		if(cardSum[i]<21)
-	 	{
-	 		if (cardSum[i]>=cardSum[n_user])
-	 			dollar[i]+=bet[i];
-	 		else
-	 			dollar[i]-=bet[i];
-	 		
-		}
-		else if (cardSum[i]==21)
 		{
-			
-		}
-		else	//if players don't get overflow ->
-	 	{
-			dollar[i]+=bet[i];	
+			if(cardSum[i]<21)	//player not overflow
+		 	{
+	 			dollar[i]+=bet[i];
+	 		}
+			else if (cardSum[i]==21)
+			{
+				
+			}
 		}
 	
+	else if (cardSum[n_user]<21)		//dealer not overflow & not 21
+	{		
+		if(cardSum[i]<cardSum[n_user])	//player lose
+		 	{
+	 			dollar[i]-=bet[i];
+	 		}
+			else if (cardSum[i]>=cardSum[n_user]	&&	cardSum[i]<=21)	//player win
+			{
+	 			dollar[i]+=bet[i];			
+			}		
+	}
+	else if (cardSum[n_user]==21)			//dealer 21 (how to determine blackjack?)	
+	{
+		if(cardSum[i]<21)
+		{
+			dollar[i]-=bet[i];
+
+		}
+	}
 	
 	for(i=0;i<n_user;i++)
 	{
 		if (i==0)
 		{
-			printf("\nyour cardsum	: %i", cardSum[i]);
+			printf("\n  -> your result	: (%i)\n", dollar[i]);
 		}
 		else
 		{
-			printf("\nplayer%i cardsum	: %i",i, cardSum[i]);
+			printf("  ->%ith result	: (%i)\n",i, dollar[i]);
 		}
 	}
 	
-			printf("\ndealer cardsum : %i\n", cardSum[n_user]);
+		
 				
 	
 }
+
 /*		
 	if(cardSum[n_user]==21)
 	{
@@ -506,7 +520,8 @@ int checkResult(void){
 }
 
 
-
+*/
+/*
 
 int checkWinner(int roundIndex) {
 	roundIndex++;	
